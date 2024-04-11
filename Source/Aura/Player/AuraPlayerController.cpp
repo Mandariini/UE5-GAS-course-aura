@@ -5,10 +5,21 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/KismetSystemLibrary.h"
+
+#include "Aura/Interaction/EnemyInterface.h"
+
 
 AAuraPlayerController::AAuraPlayerController()
 {
   bReplicates = true;
+}
+
+void AAuraPlayerController::PlayerTick(float DeltaTime)
+{
+  Super::PlayerTick(DeltaTime);
+
+  CursorTrace();
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -56,4 +67,32 @@ void AAuraPlayerController::Move(const FInputActionValue &InputActionValue)
     ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
     ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
   }
+}
+
+void AAuraPlayerController::CursorTrace()
+{
+  FHitResult CursorHit;
+  const auto bHitOccured = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
+
+  if (!bHitOccured || !CursorHit.bBlockingHit) {
+    return;
+  }
+
+  LastActor = ThisActor;
+  ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+
+  if (ThisActor != LastActor) {
+    UE_LOG(LogTemp, Warning, TEXT("2"));
+    if (LastActor) {
+      LastActor->UnHighlightActor();
+    }
+
+    if (ThisActor) {
+      ThisActor->HighlightActor();
+    }
+  }
+
+  // if (UKismetSystemLibrary::DoesImplementInterface(CursorHit.GetActor(), UEnemyInterface::StaticClass())) {
+  //   IEnemyInterface::HighlightActor()
+  // }
 }

@@ -3,6 +3,9 @@
 
 #include "AuraEnemy.h"
 
-void AAuraEnemy::HighlightActor() {}
+void AAuraEnemy::HighlightActor() {
+  UE_LOG(LogTemp, Warning, TEXT("HIGHLIGHT"));
+  DrawDebugSphere(this->GetWorld(), GetActorLocation(), 20.f, 5, FColor::Red, false, 1.f);
+}
 
 void AAuraEnemy::UnHighlightActor() {}
