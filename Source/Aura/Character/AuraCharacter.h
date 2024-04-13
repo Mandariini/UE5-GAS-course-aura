@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "AuraCharacterBase.h"
-
 #include "AuraCharacter.generated.h"
 
 /**
@@ -18,4 +16,11 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase
 
 public:
   AAuraCharacter();
+
+protected:
+  virtual void PossessedBy(AController *NewController) override;
+  virtual void OnRep_PlayerState() override;
+
+private:
+  void InitializeAbilityActorInfo();
 };

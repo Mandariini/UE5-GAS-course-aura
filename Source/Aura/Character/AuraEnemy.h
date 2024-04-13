@@ -3,10 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "Aura/Interaction/EnemyInterface.h"
 #include "AuraCharacterBase.h"
-
 #include "AuraEnemy.generated.h"
 
 /**
@@ -20,6 +18,11 @@ class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 public:
   AAuraEnemy();
 
+  /* Enemy Interface */
   virtual void HighlightActor() override;
   virtual void UnHighlightActor() override;
+  /* Enemy Interface */
+
+protected:
+  virtual void BeginPlay() override;
 };
