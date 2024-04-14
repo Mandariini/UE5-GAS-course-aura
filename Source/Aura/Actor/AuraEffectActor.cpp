@@ -42,6 +42,4 @@ void AAuraEffectActor::OnOverlap(UPrimitiveComponent *OverlappedComponent, AActo
 }
 
 void AAuraEffectActor::OnEndOverlap(UPrimitiveComponent *OverlappedComponent,
-                                    AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
-{
-}
+                                    AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex) {}

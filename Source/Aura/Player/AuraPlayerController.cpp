@@ -30,8 +30,9 @@ void AAuraPlayerController::BeginPlay()
 
   UEnhancedInputLocalPlayerSubsystem *SubSystem =
     ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-  check(SubSystem);
-  SubSystem->AddMappingContext(AuraContext, 0);
+  if (SubSystem) {
+    SubSystem->AddMappingContext(AuraContext, 0);
+  }
 
   bShowMouseCursor = true;
   DefaultMouseCursor = EMouseCursor::Default;
@@ -91,8 +92,4 @@ void AAuraPlayerController::CursorTrace()
       ThisActor->HighlightActor();
     }
   }
-
-  // if (UKismetSystemLibrary::DoesImplementInterface(CursorHit.GetActor(), UEnemyInterface::StaticClass())) {
-  //   IEnemyInterface::HighlightActor()
-  // }
 }
