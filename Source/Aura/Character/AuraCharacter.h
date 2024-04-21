@@ -20,7 +20,5 @@ public:
 protected:
   virtual void PossessedBy(AController *NewController) override;
   virtual void OnRep_PlayerState() override;
-
-private:
-  void InitializeAbilityActorInfo();
+  virtual void InitializeAbilityActorInfo() override;
 };
