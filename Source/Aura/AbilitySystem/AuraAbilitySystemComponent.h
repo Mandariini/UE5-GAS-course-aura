@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "AbilitySystemComponent.h"
-
 #include "AuraAbilitySystemComponent.generated.h"
+
+// Widget controller binds to this
+DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* AssetTags */);
 
 /**
  *
@@ -18,6 +19,8 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
   void AbilityActorInfoSet();
+
+  FEffectAssetTags EffectAssetTags;
 
 protected:
   void EffectApplied(UAbilitySystemComponent *AbilitySystemComponent, const FGameplayEffectSpec &GameplayEffectSpec,
