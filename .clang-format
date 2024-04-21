@@ -6,8 +6,8 @@ AllowShortBlocksOnASingleLine: Empty
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignOperands: false
-AlignTrailingComments: false
-AlwaysBreakTemplateDeclarations: Yes
+AlignTrailingComments: true
+AlwaysBreakTemplateDeclarations: false
 BraceWrapping: 
   AfterCaseLabel: true
   AfterClass: true
