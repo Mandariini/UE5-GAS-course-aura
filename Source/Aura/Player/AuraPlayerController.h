@@ -29,7 +29,7 @@ protected:
   virtual void SetupInputComponent() override;
 
 private:
-  void Move(const FInputActionValue &InputActionValue);
+  void Move(const FInputActionValue& InputActionValue);
   void CursorTrace();
 
 private:

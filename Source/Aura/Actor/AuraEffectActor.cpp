@@ -18,42 +18,52 @@ void AAuraEffectActor::BeginPlay()
   Super::BeginPlay();
 }
 
-void AAuraEffectActor::OnOverlap(AActor *TargetActor)
+void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 {
-  if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap) {
+  if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
+  {
     ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
   }
 
-  if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap) {
+  if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
+  {
     ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
   }
 
-  if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap) {
+  if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
+  {
     ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
   }
 }
 
-void AAuraEffectActor::OnEndOverlap(AActor *TargetActor)
+void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 {
-  if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap) {
+  if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+  {
     ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
   }
 
-  if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap) {
+  if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+  {
     ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
   }
 
-  if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap) {
+  if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+  {
     ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
   }
-  if (InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap) {
-    UAbilitySystemComponent *TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-    if (!IsValid(TargetASC)) {
+  if (InfiniteEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
+  {
+    UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+    if (!IsValid(TargetASC))
+    {
       return;
     }
 
-    for (auto Iterator = ActiveEffectHandles.CreateIterator(); Iterator; ++Iterator) {
-      if (TargetASC == Iterator->Value) {
+    for (auto Iterator = ActiveEffectHandles.CreateIterator(); Iterator; ++Iterator)
+    {
+      if (TargetASC == Iterator->Value)
+      {
         TargetASC->RemoveActiveGameplayEffect(Iterator->Key, 1);
       }
       Iterator.RemoveCurrent();
@@ -61,10 +71,11 @@ void AAuraEffectActor::OnEndOverlap(AActor *TargetActor)
   }
 }
 
-void AAuraEffectActor::ApplyEffectToTarget(AActor *TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
+void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
-  UAbilitySystemComponent *TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-  if (!TargetASC) {
+  UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+  if (!TargetASC)
+  {
     return;
   }
 
@@ -76,7 +87,8 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor *TargetActor, TSubclassOf<UGam
   const FActiveGameplayEffectHandle ActiveHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
 
   const bool bIsInfinite = EffectSpecHandle.Data->Def->DurationPolicy == EGameplayEffectDurationType::Infinite;
-  if (bIsInfinite && InfiniteEffectRemovalPolicy != EEffectRemovalPolicy::DoNotRemove) {
+  if (bIsInfinite && InfiniteEffectRemovalPolicy != EEffectRemovalPolicy::DoNotRemove)
+  {
     ActiveEffectHandles.Add(ActiveHandle, TargetASC);
   }
 }

@@ -22,7 +22,7 @@ AAuraCharacter::AAuraCharacter()
   bUseControllerRotationYaw = false;
 }
 
-void AAuraCharacter::PossessedBy(AController *NewController)
+void AAuraCharacter::PossessedBy(AController* NewController)
 {
   Super::PossessedBy(NewController);
 
@@ -40,7 +40,7 @@ void AAuraCharacter::OnRep_PlayerState()
 
 void AAuraCharacter::InitializeAbilityActorInfo()
 {
-  AAuraPlayerState *AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+  AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
   check(AuraPlayerState);
   AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
   Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
@@ -48,8 +48,10 @@ void AAuraCharacter::InitializeAbilityActorInfo()
   AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
   AttributeSet = AuraPlayerState->GetAttributeSet();
 
-  if (AAuraPlayerController *AuraPlayerController = Cast<AAuraPlayerController>(GetController())) {
-    if (AAuraHUD *HUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD())) {
+  if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+  {
+    if (AAuraHUD* HUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
+    {
       HUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
     }
   }
