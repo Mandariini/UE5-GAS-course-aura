@@ -30,6 +30,7 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 {
   Super::PreAttributeChange(Attribute, NewValue);
 
+  // All this does is clamp what's returned from querying the modifier.
   if (Attribute == GetHealthAttribute())
   {
     NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
@@ -46,6 +47,16 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
   FEffectProperties Props;
   SetEffectProperties(Data, Props);
+
+  // Here we actually set the value to a clamped value.
+  if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+  {
+    SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
+  }
+  if (Data.EvaluatedData.Attribute == GetManaAttribute())
+  {
+    SetMana(FMath::Clamp(GetMaxMana(), 0, GetMaxMana()));
+  }
 }
 
 void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
