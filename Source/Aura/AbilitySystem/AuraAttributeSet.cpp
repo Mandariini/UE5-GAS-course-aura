@@ -11,9 +11,7 @@
 UAuraAttributeSet::UAuraAttributeSet()
 {
   InitHealth(10.f);
-  InitMaxHealth(100.f);
   InitMana(50.f);
-  InitMaxMana(100.f);
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -46,16 +44,6 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
   Super::PreAttributeChange(Attribute, NewValue);
-
-  // All this does is clamp what's returned from querying the modifier.
-  if (Attribute == GetHealthAttribute())
-  {
-    NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
-  }
-  if (Attribute == GetManaAttribute())
-  {
-    NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
-  }
 }
 
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
