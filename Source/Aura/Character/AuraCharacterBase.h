@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "Aura/Interaction/CombatInterface.h"
 #include "GameFramework/Character.h"
 #include "AuraCharacterBase.generated.h"
 
@@ -12,7 +13,7 @@ class UAttributeSet;
 class UAbilitySystemComponent;
 
 UCLASS(Abstract)
-class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
+class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
   GENERATED_BODY()
 

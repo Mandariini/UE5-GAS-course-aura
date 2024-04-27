@@ -18,6 +18,10 @@ public:
   AAuraCharacter();
 
 protected:
+  /* Combat Interface */
+  virtual int32 GetPlayerLevel() override;
+  /* Combat Interface */
+
   virtual void PossessedBy(AController* NewController) override;
   virtual void OnRep_PlayerState() override;
   virtual void InitializeAbilityActorInfo() override;
