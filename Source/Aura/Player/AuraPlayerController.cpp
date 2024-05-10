@@ -86,7 +86,6 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
-  FHitResult CursorHit;
   const auto bHitOccured = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
 
   if (!bHitOccured || !CursorHit.bBlockingHit)
@@ -188,10 +187,9 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
   {
     FollowTime += GetWorld()->GetDeltaSeconds();
 
-    FHitResult HitResult;
-    if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
+    if (CursorHit.bBlockingHit)
     {
-      CachedDestination = HitResult.ImpactPoint;
+      CachedDestination = CursorHit.ImpactPoint;
     }
 
     if (APawn* ControlledPawn = GetPawn())
