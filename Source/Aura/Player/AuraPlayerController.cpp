@@ -7,15 +7,19 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameplayTagContainer.h"
+#include "Aura/AuraGameplayTags.h"
 #include "Aura/AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Aura/Input/AuraInputComponent.h"
 
 #include "Aura/Interaction/EnemyInterface.h"
+#include "Components/SplineComponent.h"
 
 
 AAuraPlayerController::AAuraPlayerController()
 {
   bReplicates = true;
+
+  Spline = CreateDefaultSubobject<USplineComponent>("Spline");
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -106,7 +110,11 @@ void AAuraPlayerController::CursorTrace()
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-  // GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+  if (InputTag.MatchesTagExact(FAuraGameplayTags::GetInstance().InputTag_LMB))
+  {
+    bTargeting = ThisActor ? true : false;
+    bAutoRunning = false;
+  }
 }
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
@@ -116,19 +124,42 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
     return;
   }
   GetASC()->AbilityInputTagHeld(InputTag);
-
-  // GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Blue, *InputTag.ToString());
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-  if (!GetASC())
+  if (!InputTag.MatchesTagExact(FAuraGameplayTags::GetInstance().InputTag_LMB))
   {
+    if (GetASC())
+    {
+      GetASC()->AbilityInputTagHeld(InputTag);
+    }
     return;
   }
-  GetASC()->AbilityInputTagHeld(InputTag);
 
-  // GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Green, *InputTag.ToString());
+  if (bTargeting)
+  {
+    if (GetASC())
+    {
+      GetASC()->AbilityInputTagHeld(InputTag);
+    }
+  }
+  else
+  {
+    FollowTime += GetWorld()->GetDeltaSeconds();
+
+    FHitResult HitResult;
+    if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
+    {
+      CachedDestination = HitResult.ImpactPoint;
+    }
+
+    if (APawn* ControlledPawn = GetPawn())
+    {
+      const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+      ControlledPawn->AddMovementInput(WorldDirection);
+    }
+  }
 }
 
 UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
