@@ -29,6 +29,7 @@ public:
 
 protected:
   UFUNCTION(Client, Reliable)
-  void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& GameplayEffectSpec,
-                     FActiveGameplayEffectHandle ActiveGameplayEffectHandle) const;
+  void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
+                           const FGameplayEffectSpec& GameplayEffectSpec,
+                           FActiveGameplayEffectHandle ActiveGameplayEffectHandle) const;
 };
