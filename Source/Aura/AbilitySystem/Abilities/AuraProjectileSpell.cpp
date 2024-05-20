@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Aura/AuraGameplayTags.h"
 #include "Aura/Actor/AuraProjectile.h"
 #include "Aura/Interaction/CombatInterface.h"
 
@@ -42,11 +43,14 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
                                                                             ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
     check(Projectile);
 
-    // TODO: Give the Projectile a Gameplay Effect Spec for causing Damage.
     const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(
       GetAvatarActorFromActorInfo());
     const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(
       DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+
+    const FAuraGameplayTags GameplayTags = FAuraGameplayTags::GetInstance();
+    UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Damage, 50.f);
+
     Projectile->DamageEffectSpecHandle = SpecHandle;
 
     Projectile->FinishSpawning(SpawnTransform);
