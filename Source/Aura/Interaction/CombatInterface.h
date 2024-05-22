@@ -26,4 +26,7 @@ public:
 
   UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
   void SetForwardFacing(const FVector& FacingTarget);
+
+  UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+  UAnimMontage* GetHitReactMontage();
 };
