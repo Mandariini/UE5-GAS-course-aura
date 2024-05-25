@@ -14,7 +14,9 @@
 #include "Aura/Input/AuraInputComponent.h"
 
 #include "Aura/Interaction/EnemyInterface.h"
+#include "Aura/UI/Widget/DamageTextComponent.h"
 #include "Components/SplineComponent.h"
+#include "GameFramework/Character.h"
 
 
 AAuraPlayerController::AAuraPlayerController()
@@ -30,6 +32,24 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 
   CursorTrace();
   AutoRun();
+}
+
+void AAuraPlayerController::ClientShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+{
+  if (IsValid(TargetCharacter) && DamageTextComponentClass)
+  {
+    UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+    DamageText->RegisterComponent(); // Since we create damage text dynamically, we need to register it.
+
+    // After attaching to component, it will immediately run the animation
+    DamageText->AttachToComponent(TargetCharacter->GetRootComponent(),
+                                  FAttachmentTransformRules::KeepRelativeTransform);
+
+    // Continue the animation and do not follow the player
+    DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+    DamageText->SetDamageText(DamageAmount);
+  }
 }
 
 void AAuraPlayerController::BeginPlay()
