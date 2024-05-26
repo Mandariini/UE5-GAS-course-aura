@@ -4,15 +4,18 @@
 #include "ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "Aura/AuraGameplayTags.h"
 #include "Aura/AbilitySystem/AuraAttributeSet.h"
 
 struct AuraDamageStatics
 {
   DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+  DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance)
 
   AuraDamageStatics()
   {
     DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);
   }
 
   static const AuraDamageStatics& DamageStatics()
@@ -25,6 +28,7 @@ struct AuraDamageStatics
 UExecCalc_Damage::UExecCalc_Damage()
 {
   RelevantAttributesToCapture.Add(AuraDamageStatics::DamageStatics().ArmorDef);
+  RelevantAttributesToCapture.Add(AuraDamageStatics::DamageStatics().BlockChanceDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -50,12 +54,20 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
   EvaluateParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
   EvaluateParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
-  float OutArmor = 0.f;
-  ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics::DamageStatics().ArmorDef,
-                                                             EvaluateParameters, OutArmor);
-  ++OutArmor;
+  // Get Damage Set by Caller Magnitude
+  float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::GetInstance().Damage);
 
-  const FGameplayModifierEvaluatedData EvaluatedData(AuraDamageStatics::DamageStatics().ArmorProperty,
-                                                     EGameplayModOp::Additive, OutArmor);
+  // Capture BlockChance on Target and determine if there was a successful Block
+  // If Block, halve the damage
+  float TargetBlockChance = 0.f;
+  ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics::DamageStatics().BlockChanceDef,
+                                                             EvaluateParameters, TargetBlockChance);
+  TargetBlockChance = FMath::Max<float>(TargetBlockChance, 0.f);
+
+  const bool bBlocked = FMath::RandRange(1, 100) < TargetBlockChance;
+  Damage = bBlocked ? Damage / 2.f : Damage;
+
+  const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(),
+                                                     EGameplayModOp::Additive, Damage);
   OutExecutionOutput.AddOutputModifier(EvaluatedData);
 }
