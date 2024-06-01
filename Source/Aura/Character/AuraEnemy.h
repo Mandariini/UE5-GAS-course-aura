@@ -54,7 +54,7 @@ protected:
   virtual void InitializeAbilityActorInfo() override;
   virtual void InitializeDefaultAttributes() const override;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
   int32 Level = 1;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")

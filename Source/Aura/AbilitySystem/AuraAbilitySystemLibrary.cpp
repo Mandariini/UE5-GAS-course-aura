@@ -49,17 +49,15 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
                                                             ECharacterClass CharacterClass, float Level,
                                                             UAbilitySystemComponent* ASC)
 {
-  AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-  if (!AuraGameModeBase)
+  const auto ClassInfo = GetCharacterClassInfo(WorldContextObject);
+  if (!ClassInfo)
   {
     return;
   }
 
-  const AActor* AvatarActor = ASC->GetAvatarActor();
-
-  const auto ClassInfo = AuraGameModeBase->CharacterClassInfo;
   const auto ClassDefaultInfo = ClassInfo->GetClassDefaultInfo(CharacterClass);
 
+  const AActor* AvatarActor = ASC->GetAvatarActor();
   auto PrimaryAttributesContextHandle = ASC->MakeEffectContext();
   PrimaryAttributesContextHandle.AddSourceObject(AvatarActor);
   const auto PrimaryAttributesSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo.PrimaryAttributes, Level,
@@ -81,16 +79,26 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 
 void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
-  AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-  if (!AuraGameModeBase)
+  const auto ClassInfo = GetCharacterClassInfo(WorldContextObject);
+  if (!ClassInfo)
   {
     return;
   }
 
-  const auto ClassInfo = AuraGameModeBase->CharacterClassInfo;
   for (const auto& AbilityClass : ClassInfo->CommonAbilities)
   {
     auto AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
     ASC->GiveAbility(AbilitySpec);
   }
+}
+
+UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
+{
+  AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+  if (!AuraGameModeBase)
+  {
+    return nullptr;
+  }
+
+  return AuraGameModeBase->CharacterClassInfo;
 }
